@@ -1,0 +1,17 @@
+{
+  "title": "VSAN CLUSTER",
+  "hosts": [
+    {"id": "vsan1", "label": "VSAN-01", "address": "google.com"},
+    {"id": "vsan2", "label": "VSAN-02", "address": "google.com"},
+    {"id": "vsan3", "label": "VSAN-03", "address": "google.com"},
+    {"id": "vsan4", "label": "VSAN-04", "address": "google.com"},
+    {"id": "vsan5", "label": "VSAN-05", "address": "google.com"},
+    {"id": "vsan6", "label": "VSAN-06", "address": "google.com"},
+    {"id": "vsan7", "label": "VSAN-07", "address": "google.com"},
+    {"id": "vsan8", "label": "VSAN-08", "address": "google.com"},
+    {"id": "vsan9", "label": "VSAN-09", "address": "google.com"},
+    {"id": "vsan10", "label": "VSAN-10", "address": "google.com"},
+    {"id": "vsan11", "label": "VSAN-11", "address": "google.com"},
+    {"id": "vsan12", "label": "VSAN-12", "address": "google.com"}
+  ]
+}

@@ -1,0 +1,17 @@
+[Unit]
+Description=Cyber Dashboard Monitoring
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/opt/dashboard
+ExecStart=/usr/bin/python3 /opt/dashboard/app.py
+Restart=always
+RestartSec=5
+StandardOutput=append:/var/log/dashboard/app.log
+StandardError=append:/var/log/dashboard/error.log
+
+[Install]
+WantedBy=multi-user.target

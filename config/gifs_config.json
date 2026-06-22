@@ -1,0 +1,63 @@
+{
+    "gifs": [
+        {
+            "id": "heartbeat",
+            "url": "/static/gifs/heartbeat.gif",
+            "position": {
+                "top": "70"
+            },
+            "size": {
+                "width": "600px",
+                "height": "600px"
+            },
+            "opacity": 1.0,
+            "zIndex": 20001,
+            "enabled": false
+        },
+        {
+            "id": "dpog",
+            "url": "/static/gifs/dpog.gif",
+            "position": {
+                "center_y": true,
+                "left": "2%"
+            },
+            "size": {
+                "width": "400px",
+                "height": "300px"
+            },
+            "opacity": 1.0,
+            "zIndex": 2001,
+            "enabled": false
+        },
+        {
+            "id": "tech",
+            "url": "/static/gifs/tech.gif",
+            "position": {
+                "center_y": true,
+                "left": "2%"
+            },
+            "size": {
+                "width": "350px",
+                "height": "350px"
+            },
+            "opacity": 1.0,
+            "zIndex": 2001,
+            "enabled": false
+        },
+        {
+            "id": "tech-fire",
+            "url": "/static/gifs/tech-fire.gif",
+            "position": {
+                "left": "1%",
+                "top": "35%"
+            },
+            "size": {
+                "width": "440px",
+                "height": "240px"
+            },
+            "opacity": 1.0,
+            "zIndex": 2001,
+            "enabled": false
+        }
+    ]
+}

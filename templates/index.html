@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CYBER DASHBOARD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Цвета */
+            --bg-color: #000000;
+            --border-color: #E1A500;
+            --accent-color: #E1A500;
+            --up-color: #007BFF;
+            --down-color: #DC143C;
+            --error-color: #FF4444;
+            --text-color: #E1A500;
+            
+            /* Размеры */
+            --border-width: 3px;
+            --main-margin: 20px;
+            --line-width: 4px;
+            
+            /* Шрифты */
+            --main-font: 'Orbitron', monospace;
+            --label-font: 'Rajdhani', sans-serif;
+            --large-text: 72px;
+            --medium-text: 48px;
+            --small-text: 36px;
+            
+            /* Геометрия шестиугольников */
+            --hex-width: 110px;
+            --hex-height: calc(var(--hex-width) * 0.93);
+            --hex-margin: 0px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--main-font);
+            overflow: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+        
+        .main-border {
+            position: fixed;
+            top: var(--main-margin);
+            left: var(--main-margin);
+            right: var(--main-margin);
+            bottom: var(--main-margin);
+            border: var(--border-width) solid var(--border-color);
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .container {
+            padding: 30px;
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .connector {
+            z-index: -5;
+        }
+        
+        /* Стили для декоративных гифок - КАЖДАЯ ГИФКА ОТДЕЛЬНО */
+        .animated-gif {
+            position: fixed;
+            pointer-events: none;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+        
+        /* Верхний блок с шестиугольниками */
+        .top-cluster {
+            text-align: center;
+            margin-top: 20px;
+            position: relative;
+            z-index: 100;
+        }
+        
+        .cluster-title {
+            font-size: var(--medium-text);
+            margin-bottom: 20px;
+            color: var(--accent-color);
+            text-shadow: 0 0 10px var(--accent-color);
+        }
+        
+        .hex-grid {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .hex-row {
+            display: flex;
+            margin-bottom: calc(var(--hex-height) * -0.25);
+        }
+        
+        .hex-row.offset {
+            /* Убрано margin-left */
+        }
+        
+        .hexagon {
+            position: relative;
+            width: var(--hex-width);
+            height: var(--hex-height);
+            background: var(--bg-color);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            margin: 0 var(--hex-margin);
+        }
+        
+        .hexagon.up {
+            background: var(--up-color);
+        }
+        
+        .hexagon.down {
+            background: var(--down-color);
+        }
+        
+        .hexagon.error {
+            background: var(--error-color);
+        }
+        
+        .hexagon.empty {
+            background: transparent;
+        }
+        
+        .hexagon:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--accent-color);
+            z-index: 10;
+        }
+        
+        .hex-label {
+            font-family: var(--label-font);
+            font-size: var(--label-text);
+            font-weight: 600;
+            color: var(--accent-color);
+            text-align: center;
+            text-shadow: 0 0 5px var(--accent-color);
+            pointer-events: none;
+        }
+        
+        /* Боковые панели */
+        .side-panel {
+            position: absolute;
+            top: 50px;
+        }
+        
+        .side-panel.left {
+            left: 50px;
+            width: 350px;
+        }
+        
+        .side-panel.right {
+            right: 50px;
+            width: 380px;
+        }
+        
+        .time-display {
+            font-size: var(--medium-text);
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px var(--accent-color);
+            line-height: 1.2;
+            white-space: pre-line;
+            width: 400px;
+        }
+        
+        .date-info {
+            font-size: var(--small-text);
+            margin-top: 30px;
+        }
+        
+        .date-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-family: var(--label-font);
+            align-items: center;
+        }
+        
+        .date-label {
+            margin-right: 10px;
+        }
+        
+        .date-value {
+            font-weight: 600;
+        }
+        
+        .service-status {
+            font-size: var(--small-text);
+        }
+        
+        .service-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            font-family: var(--label-font);
+            padding: 4px 8px;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        
+        .service-item.up {
+            background: linear-gradient(90deg, transparent, rgba(0, 123, 255, 0.15));
+            border: 1px solid var(--up-color);
+        }
+        
+        .service-item.down {
+            background: linear-gradient(90deg, transparent, rgba(220, 20, 60, 0.15));
+            border: 1px solid var(--down-color);
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+        
+        .status-indicator.up {
+            background: var(--up-color);
+            box-shadow: 0 0 10px var(--up-color);
+        }
+        
+        .status-indicator.down {
+            background: var(--down-color);
+            box-shadow: 0 0 10px var(--down-color);
+        }
+        
+        /* Центральная надпись */
+        .stage-label {
+            position: absolute;
+            top: 65%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: var(--large-text);
+            color: var(--accent-color);
+            text-shadow: 0 0 20px var(--accent-color);
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+        
+        /* Нижние блоки */
+        .bottom-clusters {
+            position: absolute;
+            bottom: 50px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 50px;
+        }
+        
+        .bottom-cluster {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .bottom-cluster .hex-grid {
+            gap: calc(var(--hex-height) * -0.25);
+        }
+        
+        .bottom-cluster .hex-row {
+            margin-bottom: calc(var(--hex-height) * -0.25);
+        }
+        
+        .bottom-cluster.left-cluster .hex-row.offset {
+            margin-left: calc(var(--hex-width) / 2 + var(--hex-margin) / 2 + 11.1%);
+        }
+        
+        .bottom-cluster.right-cluster .hex-row.offset {
+            margin-left: calc(var(--hex-width) / 2 + var(--hex-margin) / 2 - 33.3%);
+        }
+        
+        .bottom-cluster .cluster-title {
+            font-size: var(--small-text);
+            margin-top: 20px;
+            margin-bottom: 0;
+            order: 2;
+        }
+        
+        /* Соединительные линии */
+        .connector {
+            position: absolute;
+            background: var(--accent-color);
+            box-shadow: 0 0 10px var(--accent-color);
+        }
+        
+        .connector.horizontal {
+            height: var(--line-width);
+        }
+        
+        .connector.vertical {
+            width: var(--line-width);
+        }
+        
+        .connector.diagonal-left {
+            width: var(--line-width);
+            transform: rotate(30deg);
+        }
+        
+        .connector.diagonal-right {
+            width: var(--line-width);
+            transform: rotate(-30deg);
+        }
+        
+        /* Надписи под линиями */
+        .line-label {
+            position: absolute;
+            font-family: var(--label-font);
+            font-size: 36px;
+            color: var(--accent-color);
+            text-shadow: 0 0 10px var(--accent-color);
+            text-align: center;
+        }
+        
+        /* Адаптивность для разрешения менее 1100px */
+        @media (max-width: 1100px) {
+            .side-panel.right {
+                width: 150px;
+            }
+            
+            .side-panel.left {
+                width: 250px;
+            }
+            
+            .time-display {
+                width: 300px;
+                font-size: 32px;
+            }
+            
+            .date-info {
+                font-size: 28px;
+            }
+            
+            .service-status {
+                font-size: 28px;
+            }
+            
+            .service-item {
+                padding: 2px 4px;
+                margin-bottom: 4px;
+            }
+            
+            :root {
+                --hex-width: 70px;
+                --label-text: 16px;
+            }
+            
+            .stage-label {
+                font-size: 60px;
+            }
+        }
+
+        /* Адаптивность для очень маленьких экранов */
+        @media (max-width: 900px) {
+            .side-panel.right {
+                width: 120px;
+            }
+            
+            .side-panel.left {
+                width: 200px;
+            }
+            
+            .time-display {
+                width: 250px;
+                font-size: 28px;
+            }
+            
+            .date-info {
+                font-size: 24px;
+            }
+            
+            .service-status {
+                font-size: 24px;
+            }
+            
+            :root {
+                --hex-width: 60px;
+                --label-text: 14px;
+            }
+            
+            .stage-label {
+                font-size: 48px;
+            }
+            
+            .bottom-clusters {
+                padding: 0 30px;
+            }
+            
+            .side-panel.left,
+            .side-panel.right {
+                top: 30px;
+            }
+            
+            .side-panel.left {
+                left: 30px;
+            }
+            
+            .side-panel.right {
+                right: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-border"></div>
+    
+    <!-- Анимированные гифки - КАЖДАЯ ОТДЕЛЬНО -->
+    {% for gif in gifs_config.gifs %}
+        {% if gif.enabled %}
+        <img src="{{ gif.url }}" 
+             id="gif-{{ gif.id }}"
+             class="animated-gif"
+             style="
+                {% if gif.position.center_both %}
+                    top: 50%; left: 50%; transform: translate(-50%, -50%) {{ gif.position.transform | default('') }};
+                {% elif gif.position.center_x and gif.position.center_y %}
+                    top: 50%; left: 50%; transform: translate(-50%, -50%) {{ gif.position.transform | default('') }};
+                {% elif gif.position.center_x %}
+                    left: 50%; transform: translateX(-50%) {{ gif.position.transform | default('') }};
+                    {% if gif.position.top %}top: {{ gif.position.top }};{% endif %}
+                    {% if gif.position.bottom %}bottom: {{ gif.position.bottom }};{% endif %}
+                {% elif gif.position.center_y %}
+                    top: 50%; transform: translateY(-50%) {{ gif.position.transform | default('') }};
+                    {% if gif.position.left %}left: {{ gif.position.left }};{% endif %}
+                    {% if gif.position.right %}right: {{ gif.position.right }};{% endif %}
+                {% else %}
+                    {% if gif.position.top %}top: {{ gif.position.top }};{% endif %}
+                    {% if gif.position.left %}left: {{ gif.position.left }};{% endif %}
+                    {% if gif.position.right %}right: {{ gif.position.right }};{% endif %}
+                    {% if gif.position.bottom %}bottom: {{ gif.position.bottom }};{% endif %}
+                    {% if gif.position.transform %}transform: {{ gif.position.transform }};{% endif %}
+                {% endif %}
+                width: {{ gif.size.width }};
+                height: {{ gif.size.height }};
+                opacity: {{ gif.opacity }};
+                z-index: {{ gif.zIndex }};
+                {% if gif.blend_mode %}mix-blend-mode: {{ gif.blend_mode }};{% endif %}
+                {% if gif.filter %}filter: {{ gif.filter }};{% endif %}
+             "
+             alt="{{ gif.id }}">
+        {% endif %}
+    {% endfor %}
+    
+    <div class="container">
+        <!-- Верхний блок -->
+        <div class="top-cluster">
+            <div class="cluster-title">COD CLUSTER</div>
+            <div class="hex-grid">
+                {% for row in top_rows %}
+                <div class="hex-row {% if loop.index0 % 2 == 1 %}offset{% endif %}">
+                    {% for host in row %}
+                    {% if host %}
+                    <div class="hexagon {{ status.top_hosts[host.id].status if host.id in status.top_hosts else 'down' }}" 
+                         id="top-{{ host.id }}">
+                        <div class="hex-label">{{ host.label }}</div>
+                    </div>
+                    {% else %}
+                    <div class="hexagon empty">
+                        <div class="hex-label">---</div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Центральная надпись -->
+        <div class="stage-label">STAGE•01</div>
+        
+        <!-- Нижние блоки -->
+        <div class="bottom-clusters">
+            <!-- Левый нижний блок -->
+            <div class="bottom-cluster left-cluster">
+                <div class="hex-grid">
+                    {% for row in vsan_rows %}
+                    <div class="hex-row {% if loop.index0 % 2 == 1 %}offset{% endif %}">
+                        {% for host in row %}
+                        {% if host %}
+                        <div class="hexagon {{ status.vsan_hosts[host.id].status if host.id in status.vsan_hosts else 'down' }}" 
+                             id="vsan-{{ host.id }}">
+                            <div class="hex-label">{{ host.label }}</div>
+                        </div>
+                        {% else %}
+                        <div class="hexagon empty">
+                            <div class="hex-label">---</div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="cluster-title">{{ vsan_config.title }}</div>
+            </div>
+            
+            <!-- Правый нижний блок -->
+            <div class="bottom-cluster right-cluster">
+                <div class="hex-grid">
+                    {% for row in demos_rows %}
+                    <div class="hex-row {% if loop.index0 % 2 == 1 %}offset{% endif %}">
+                        {% for host in row %}
+                        {% if host %}
+                        <div class="hexagon {{ status.demos_hosts[host.id].status if host.id in status.demos_hosts else 'down' }}" 
+                             id="demos-{{ host.id }}">
+                            <div class="hex-label">{{ host.label }}</div>
+                        </div>
+                        {% else %}
+                        <div class="hexagon empty">
+                            <div class="hex-label">---</div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="cluster-title">{{ demos_config.title }}</div>
+            </div>
+        </div>
+        
+        <!-- Левая боковая панель -->
+        <div class="side-panel left">
+            <div class="time-display">Present Day...
+Present Time!</div>
+            <div class="date-info">
+                <div class="date-line">
+                    <span class="date-label">DATE :</span>
+                    <span class="date-value" id="current-date">{{ status.datetime.date }}</span>
+                </div>
+                <div class="date-line">
+                    <span class="date-label">DAY :</span>
+                    <span class="date-value" id="current-day">{{ status.datetime.day }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Правая боковая панель -->
+        <div class="side-panel right">
+            <div class="cluster-title">{{ side_config.title }}</div>
+            <div class="service-status">
+                {% for service in side_config.services %}
+                <div class="service-item {{ status.side_services[service.label].status if service.label in status.side_services else 'down' }}" 
+                     id="service-{{ service.label }}">
+                    <span>{{ service.label }}</span>
+                    <div class="status-indicator {{ status.side_services[service.label].status if service.label in status.side_services else 'down' }}"></div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Соединительные линии -->
+        <div class="connector horizontal" style="top: 75%; left: 20%; width: 70%;"></div>
+        
+        <div class="connector diagonal-left" style="top: 35%; left: 25%; height: 500px;"></div>
+        <div class="connector diagonal-right" style="top: 35%; right: 25%; height: 500px;"></div>
+        
+        <!-- Надписи под линиями -->
+        <div class="line-label" style="top: 60%; left: 23%; transform: rotate(-60deg);">10 Gb/s</div>
+        <div class="line-label" style="top: 60%; right: 23%; transform: rotate(60deg);">500 Mb/s</div>
+    </div>
+
+    <script>
+        // Автообновление статусов
+        function updateStatus() {
+            fetch('/api/status')
+                .then(response => response.json())
+                .then(data => {
+                    // Обновляем дату и время
+                    document.getElementById('current-date').textContent = data.datetime.date;
+                    document.getElementById('current-day').textContent = data.datetime.day;
+                    
+                    // Обновляем верхние хосты
+                    for (const [hostId, hostStatus] of Object.entries(data.top_hosts)) {
+                        const element = document.getElementById(`top-${hostId}`);
+                        if (element) {
+                            element.className = `hexagon ${hostStatus.status}`;
+                        }
+                    }
+                    
+                    // Обновляем сервисы
+                    for (const [serviceName, serviceStatus] of Object.entries(data.side_services)) {
+                        const element = document.getElementById(`service-${serviceName}`);
+                        if (element) {
+                            element.className = `service-item ${serviceStatus.status}`;
+                            const indicator = element.querySelector('.status-indicator');
+                            if (indicator) {
+                                indicator.className = `status-indicator ${serviceStatus.status}`;
+                            }
+                        }
+                    }
+                    
+                    // Обновляем VSAN хосты
+                    for (const [hostId, hostStatus] of Object.entries(data.vsan_hosts)) {
+                        const element = document.getElementById(`vsan-${hostId}`);
+                        if (element) {
+                            element.className = `hexagon ${hostStatus.status}`;
+                        }
+                    }
+                    
+                    // Обновляем DEMOS хосты
+                    for (const [hostId, hostStatus] of Object.entries(data.demos_hosts)) {
+                        const element = document.getElementById(`demos-${hostId}`);
+                        if (element) {
+                            element.className = `hexagon ${hostStatus.status}`;
+                        }
+                    }
+                })
+                .catch(error => console.error('Error updating status:', error));
+        }
+        
+        // Обновляем каждые 60 секунд
+        setInterval(updateStatus, 60000);
+        
+        // Первое обновление через 2 секунды после загрузки
+        setTimeout(updateStatus, 2000);
+    </script>
+</body>
+</html>

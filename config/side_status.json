@@ -1,0 +1,12 @@
+{
+  "title": "SERVICE STATUS",
+  "services": [
+    {"label": "SERVICE-01", "address": "google.com"},
+    {"label": "SERVICE-02", "address": "google.com"},
+    {"label": "SERVICE-03", "address": "google.com"},
+    {"label": "SERVICE-04", "address": "google.com"},
+    {"label": "SERVICE-05", "address": "google.com"},
+    {"label": "SERVICE-06", "address": "google.com"},
+    {"label": "SERVICE-07", "address": "google.com"}
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "title": "DEMOS CLUSTER",
+  "hosts": [
+    {"id": "demos1", "label": "DEMOS-01", "address": "google.com"},
+    {"id": "demos2", "label": "DEMOS-02", "address": "google.com"},
+    {"id": "demos3", "label": "DEMOS-03", "address": "google.com"},
+    {"id": "demos4", "label": "DEMOS-04", "address": "google.com"},
+    {"id": "demos5", "label": "DEMOS-05", "address": "google.com"},
+    {"id": "demos6", "label": "DEMOS-06", "address": "google.com"},
+    {"id": "demos7", "label": "DEMOS-07", "address": "google.com"},
+    {"id": "demos8", "label": "DEMOS-08", "address": "google.com"},
+    {"id": "demos9", "label": "DEMOS-09", "address": "google.com"},
+    {"id": "demos10", "label": "DEMOS-10", "address": "google.com"},
+    {"id": "demos11", "label": "DEMOS-11", "address": "google.com"},
+    {"id": "demos12", "label": "DEMOS-12", "address": "google.com"}
+  ]
+}
